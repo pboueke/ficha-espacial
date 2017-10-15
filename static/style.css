@@ -62,7 +62,9 @@ a {
   font-weight: 600 !important;
 }
 
-
+.special {
+	opacity: 1 !important;
+}
 
 #impress {
   z-index: 25;
