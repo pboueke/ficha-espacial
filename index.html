@@ -1,0 +1,91 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=1024" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Ficha Espacial</title>
+
+    <meta name="description" content="A brief introduction to the concept of network science (or complex networks)." />
+    <meta name="author" content="Pedro Boueke" />
+
+    <link href="static/style.css" rel="stylesheet" />
+	<link href="static/background.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+  </head>
+  <body class="impress-not-supported">
+    <div id='stars'></div>
+	<div id='stars2'></div>
+	<div id='stars3'></div>
+    <div class="fallback-message">
+        <p>Your browser <b>doesn't support the features required</b> by impress.js, so you are presented with a simplified version of this presentation.</p>
+        <p>For the best experience please use the latest <b>Chrome</b>, <b>Safari</b> or <b>Firefox</b> browser.</p>
+    </div>
+    <div id="impress">
+	
+      <div id="Title" class="step press" data-x="0" data-y="0" data-scale="10">
+        <div class="title tech">FICHA ESPACIAL</div>
+        <div style="padding-top:40px"></div>
+        <p class="black-box">Cruzamento de dados eleitorais brasileiros com indicadores sociais a partir de dados abertos e geolocalizados</p>
+      </div>
+
+      <div class="step press" data-x="0" data-y="0" data-z="200000"  data-scale="10">
+        <div class="sans small-text">Tentando respoder a pergunta: </div>
+		<div style="padding-top:60px"></div>
+		<div class="sans list-text black-box">Existe correlação entre a ficha do representate eleito por uma região e os seus indicadores sociais?</div>
+      </div>
+	  
+	  <div class="step press" data-x="-1000" data-y="0" data-z="210000"  data-scale="10">
+        <div class="sans small-text">MVP: uma narrativa interativa </div>
+		<div style="padding-top:60px"></div>
+		<div class="sans list-text black-box">Focada no estado do Rio de Janeiro, fazendo uso da plataforma <a href="http://apps.mprj.mp.br/sistema/mpmapas/home.html">MP Em Mapas</a>, do <a href="https://www.mprj.mp.br/" >Ministério Público do Rio de Janeiro</a>, deve contar com:</div>
+		<div style="padding-top:20px"></div>
+		<div class="sans list-text"> <li>Um ferramental que seja capaz de de fazer o cruzamento de dados entre as diversas bases utilizadas</li></div>
+		<div class="sans list-text"> <li>Um estudo de caso que responda, em algum contexto, à pergunta proposta</li></div>
+	  </div>
+	  
+      <div class="step press" data-x="20000" data-y="0" data-z="210000" data-scale="10" data-rotate-y="10">
+          <image width="150%" src="img/earth.png"><image/>
+	  </div>
+	  
+	  <div class="step press" data-x="24500" data-y="2000" data-z="210100"  data-scale="1" data-rotate-y="10">
+          <image width="100%" src="img/rio.png"><image/>
+	  </div>
+	  
+	  <div class="step press" data-x="24630" data-y="2070" data-z="210200"  data-scale="0.2" data-rotate-y="10">
+          <div style="display:flex;">
+	  		<image width="50%" src="img/friburgo.png"><image/>
+	  		<div class="black-box" style="display:flex; flex-direction: column;">
+	  			<p>Histórico de políticos eleitos por município</p>
+	  			<p>+</p>
+	  			<p>Ficha dos políticos eleitos</p>
+	  			<p>+</p>
+	  			<p>Histórico de indicadores sociais por município </p>
+	  		</div>
+	  	</div>
+	  </div>
+	
+	  <div class="step press" data-x="34000" data-y="0" data-z="220200"  data-scale="10" data-rotate-y="10">
+	    <div class="title tech">FICHA ESPACIAL</div>
+		<div style="padding-top:40px"></div>
+		<div class="sans list-text black-box">Perguntas, críticas, sugestões?</div>
+      </div>
+      
+    </div>
+    <script src="impress/js/impress.js"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-63582989-1', 'auto');
+      ga('send', 'pageview');
+
+      if ("ontouchstart" in document.documentElement) {
+          document.querySelector(".hint").innerHTML = "<p>Tap on the left or right to navigate</p>";
+      }
+      impress().init();
+
+      window.dispatchEvent(new Event('resize'));
+    </script>
+  </body>
+</html>
