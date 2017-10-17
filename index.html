@@ -22,24 +22,18 @@
     </div>
     <div id="impress">
 	
-      <div id="Title" class="step press" data-x="-15000" data-y="0" data-z="00000" data-scale="1">
+      <div id="Title" class="step press" data-x="-15000" data-y="-0" data-z="190000" data-scale="1">
         <div class="title tech">FICHA ESPACIAL</div>
         <div style="padding-top:40px"></div>
         <p class="black-box">Cruzamento de dados eleitorais brasileiros com indicadores sociais a partir de dados abertos e geolocalizados</p>
       </div>
-
-      <!--<div class="step press" data-x="0" data-y="0" data-z="200000"  data-scale="10">
-        <div class="sans small-text">Tentando respoder a pergunta: </div>
-		<div style="padding-top:60px"></div>
-		<div class="sans list-text black-box">Existe correlação entre a ficha do representate eleito por uma região e os seus indicadores sociais?</div>
-      </div>-->
 	  
 	  <div class="step press" data-x="-15000" data-y="0" data-z="200000" data-scale="1">
 		<div class="sans small-text"> Proposição do problema </div>
 		<div style="padding-top:60px"></div>
 		<div class="sans list-text black-box">É possível tomarmos decisões embasadas em dados históricos quando o assunto é política? </div>
 		<div style="padding-top:30px"></div> <p>
-			Como usar indicadores sociais e de corrupção para guiarmos nossa democracia?
+			Como usar indicadores sociais e de corrupção para guiar a nossa democracia?
 		</p>
 	  </div>
 	  
@@ -47,6 +41,7 @@
           <image width="100%" src="img/diagram.png"><image/>
 	  </div>
 	  
+	  <!-- geracao de dados, a principio, partira apenas de instituicoes 
 	  <div class="step press" data-x="-17300" data-y="2500" data-z="200000" data-scale="1">
 		<div class="sans small-text"> Geração de informações: coisas  </div>
 	  </div>
@@ -54,15 +49,16 @@
 	  <div class="step press" data-x="-15000" data-y="0" data-z="200000" data-scale="10">
 	  </div><!-- BACK TO MAIN -->
 	  
-	  <div class="step press" data-x="-15000" data-y="2500" data-z="200000" data-scale="1">
-		<div class="sans small-text"> Geração de informações: pessoas </div>
-	  </div>
-	  
-	  <div class="step press" data-x="-15000" data-y="0" data-z="200000" data-scale="10">
-	  </div><!-- BACK TO MAIN -->
-	  
 	  <div class="step press" data-x="-12700" data-y="2500" data-z="200000" data-scale="1">
-		<div class="sans small-text"> Geração de informações: instituições </div>
+		<div class="sans small-text"> Geração de informações: Instituições </div>
+		<div style="padding-top:30px"></div>
+		<div class="black-box">
+			<div class="sans list-text"> <li><a href="https://www.mprj.mp.br/">Ministério Público do Rio de Janeiro</a>, <a href="http://apps.mprj.mp.br/sistema/mpmapas/home.html">MPRJ Em Mapas</a></li></div>
+			<div class="sans list-text"> <li><a href="http://www.tre-rj.jus.br">Tribunal Regional Eleitora do Rio de Janeiro</a>, <a href="http://www.tre-rj.jus.br/site/eleicoes/repositorio_dados/repositorio.jsp">Repositório de dados eleitorais</a></li></div>
+			<div class="sans list-text"> <li><a href="http://dados.gov.br">PORTAL BRASILEIRO DE DADOS ABERTOS</a>, <a href="http://dados.gov.br">data.gov.br</a></li></div>
+			<div class="sans list-text"> <li><a href="http://www.rio.rj.gov.br/">Prefeitura do Rio de Janeiro</a>, <a href="http://data.rio/">data.rio</a></li></div>
+			<div class="sans list-text"> <li><a href="http://www.ipeadata.gov.br/Default.aspx"><span style="font-weight: 600 !important;">ipea</span><span style="font-weight: 200 !important;">data</span></a></li></div>
+		</div>
 	  </div>
 	  
 	  <div class="step press" data-x="-15000" data-y="0" data-z="200000" data-scale="10">
@@ -70,13 +66,22 @@
 	  
 	  <div class="step press" data-x="-15000" data-y="-2500" data-z="200000" data-scale="1">
 		<div class="sans small-text"> Estratégia de dados </div>
+		<div style="padding-top:30px"></div>
+		<div class="black-box">
+			<div class="sans list-text"> Todos os dados utilizados serão provenientes de instituições públicas e terão suas licensas respeitadas e todos os dados produzidos, já com um maior grau de riqueza, serão disponibilizados abertamente, respeitando as licensas dos dados que lhes deram origem.</div>
+		</div>
 	  </div>
 	  
 	  <div class="step press" data-x="-15000" data-y="0" data-z="200000" data-scale="10">
 	  </div><!-- BACK TO MAIN -->
 
+	<!-- Nao parece razoavel considerar a digitalizacao como parte do escopo do projeto, visto que os dados já serao consumidos digitalmente
 	  <div class="step press" data-x="-17300" data-y="0" data-z="200000" data-scale="1">
 		<div class="sans small-text"> Digitalização das informações </div>
+		<div style="padding-top:30px"></div>
+		<div class="black-box">
+			<div class="sans list-text">Não consta, no escopo do projeto, a participar na coleta e digitalizacao de dados</div>
+		</div>
 	  </div>
 	  
 	  <div class="step press" data-x="-15000" data-y="0" data-z="200000" data-scale="10">
@@ -84,6 +89,10 @@
 	  
 	  <div class="step press" data-x="-17300" data-y="-2500" data-z="200000" data-scale="1">
 		<div class="sans small-text"> Governança de dados </div>
+		<div style="padding-top:30px"></div>
+		<div class="black-box">
+			<div class="sans list-text">Os dados brutos que entrarão no sistema serão processados e disponibilizados abertamente de forma estática na web, enquanto não existirem políticas para atualização. Fora a reestruturação que será promovida para a análise proposta, não há planos para cuidados adicionais com a base.</div>
+		</div>
 	  </div>
 	  
 	  <div class="step press" data-x="-15000" data-y="0" data-z="200000" data-scale="10">
@@ -91,6 +100,10 @@
 	  
 	  <div class="step press" data-x="-12700" data-y="-2500" data-z="200000" data-scale="1">
 		<div class="sans small-text"> Analítica de dados </div>
+		<div style="padding-top:30px"></div>
+		<div class="black-box">
+			<div class="sans list-text">Toda a inteligência gerada será proveniente de indicadores extraídos dos dados reestruturados e processados, a fim de evidenciar relações emergentes do cruzamento das distintas bases que compõe os insumos do projeto. Não existem limitações técnicas ou analíticas aparentes que impessam ou inviabilizem o desenvolvimento do projeto.</div>
+		</div>
 	  </div>
 	  
 	  <div class="step press" data-x="-15000" data-y="0" data-z="200000" data-scale="10">
@@ -98,6 +111,21 @@
 	  
 	  <div class="step press" data-x="-12700" data-y="0" data-z="200000" data-scale="1">
 		<div class="sans small-text"> Visualização de dados </div>
+		<div style="padding-top:30px"></div>
+		<div class="black-box">
+			<div class="sans list-text">Espera-se que o resultado indique, de forma objetiva, impacial e generalista, se partidos e/ou políticos promovem ou não o crescimento de indicadores socioeconômicos das regiões que os elegeram, servindo como um indicador tanto individualizado para os políticos eleitos, quanto comparativo para as diversas zonas eleitorais. </div>
+		</div>
+	  </div>
+	  
+	  <div class="step press" data-x="-15000" data-y="0" data-z="200000" data-scale="10">
+	  </div><!-- BACK TO MAIN -->
+	  
+	  <div class="step press" data-x="-15000" data-y="2500" data-z="200000" data-scale="1">
+		<div class="sans small-text"> Execução da decisão </div>
+		<div style="padding-top:30px"></div>
+		<div class="black-box">
+			<div class="sans list-text"> Na escasez de fontes imparciais e orientadas a dados no que diz respeito à esfera política, o projeto busca empoderar o Eleitor, iluminando seu caminho rumo a decisões mais inteligentes. </div>
+		</div>
 	  </div>
 	  
 	  <div class="step press" data-x="-15000" data-y="0" data-z="200000" data-scale="10">
@@ -107,10 +135,10 @@
 	  <div class="step press" data-x="1500" data-y="0" data-z="215000"  data-scale="10">
         <div class="sans small-text">MVP: uma narrativa interativa </div>
 		<div style="padding-top:60px"></div>
-		<div class="sans list-text black-box">Focada no estado do Rio de Janeiro, fazendo uso da plataforma <a href="http://apps.mprj.mp.br/sistema/mpmapas/home.html">MP Em Mapas</a>, do <a href="https://www.mprj.mp.br/" >Ministério Público do Rio de Janeiro</a>, deve contar com:</div>
+		<div class="sans list-text black-box">Focada no estado do Rio de Janeiro, fazendo uso fos dados da plataforma <a href="http://apps.mprj.mp.br/sistema/mpmapas/home.html">MP Em Mapas</a>, do <a href="https://www.mprj.mp.br/" >Ministério Público do Rio de Janeiro</a>,<br> deve contar com:</div>
 		<div style="padding-top:20px"></div>
-		<div class="sans list-text"> <li>Um ferramental que seja capaz de de fazer o cruzamento de dados entre as diversas bases utilizadas</li></div>
-		<div class="sans list-text"> <li>Um estudo de caso que responda, em algum contexto, à pergunta proposta</li></div>
+		<div class="sans list-text"> <li>Um ferramental que seja capaz de de fazer o cruzamento de dados entre as diversas bases utilizadas, corelacionando-os</li></div>
+		<div class="sans list-text"> <li>Um estudo de caso que indique, em algum contexto poítico, uma resposta ao problema proposto</li></div>
 	  </div>
 	  
       <div class="step press" data-x="20000" data-y="0" data-z="210000" data-scale="10" data-rotate-y="10">
@@ -127,9 +155,9 @@
 	  		<div class="black-box" style="display:flex; flex-direction: column;">
 	  			<p>Histórico de políticos eleitos por município</p>
 	  			<p>+</p>
-	  			<p>Ficha dos políticos eleitos</p>
-	  			<p>+</p>
-	  			<p>Histórico de indicadores sociais por município </p>
+	  			<p>Histórico de indicadores sociais por município</p>
+	  			<p>=</p>
+	  			<p>Inteligência eleitoral</p>
 	  		</div>
 	  	</div>
 	  </div>
