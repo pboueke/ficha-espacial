@@ -50,3 +50,9 @@ The readme file (LEIAME.pdf) provided by the tre data source contains the table 
     * Source: http://www.tre-rj.jus.br/site/eleicoes/repositorio_dados/repositorio.jsp
     * Example: bem_candidato_2016_RJ.txt @ Candidatos > 2016 > Bens de candidatos (formato ZIP)
     * Loading: "node fichae load tre-bem-candidato 2016 ~/Data/bem_candidato_2016_RJ.txt"
+
+3. tre-votacao-candidato
+    * Type: .txt delimited by ";"
+    * Source: http://www.tre-rj.jus.br/site/eleicoes/repositorio_dados/repositorio.jsp
+    * Example: votacao_candidato_munzona_2016_RJ.txt @ Candidatos > 2016 > Votação nominal por município e zona (formato ZIP)
+    * Loading: "node fichae load tre-votacao-candidato 2016 ~/Data/votacao_candidato_munzona_2016_RJ.txt"

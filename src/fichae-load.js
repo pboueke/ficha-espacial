@@ -5,6 +5,7 @@ var program = require('commander');
 var arangojs = require('arangojs');
 var candidate = require("./models/candidate.js");
 var property = require("./models/candidate-property.js");
+var result = require("./models/candidate-voting-results.js");
 var string = require("./utils/string-utils.js");
 
 program
@@ -39,8 +40,7 @@ var lineReader = require('readline').createInterface({
 if (args[0] === "tre-consulta-cand") {
 
     lineReader.on('line', function (line) {
-        var l = string.replaceAll(line,'"', '').split(";");
-        var obj = candidate.serializeCandidateFromArray(l, args[1]);
+        var obj = candidate.deserializeCandidateFromLine(line, args[1]);
         
         console.log("["+obj.year+"]["+args[0]+"] Saving candidate: " + obj.candidate_name);
         dataCol.save(obj);
@@ -50,9 +50,18 @@ if (args[0] === "tre-consulta-cand") {
     
     lineReader.on('line', function (line) {
         var l = string.replaceAll(line,'"', '').split(";");
-        var obj = property.serializeCandidatePropertyFromArray(l, args[1]);
+        var obj = property.deserializeCandidatePropertyFromLine(line, args[1]);
         
         console.log("["+obj.year+"]["+args[0]+"] Saving property: " + obj.property_detail);
+        dataCol.save(obj);
+      });
+
+} else if (args[0] === "tre-votacao-candidato") {
+    
+    lineReader.on('line', function (line) {
+        var obj = result.deserializeCandidateVotingResultsFromLine(line, args[1]);
+        
+        console.log("["+obj.year+"]["+args[0]+"] Saving result: " + obj.zone_code);
         dataCol.save(obj);
       });
 };

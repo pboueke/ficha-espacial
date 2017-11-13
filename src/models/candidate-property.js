@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 var util = require("util");
+var string = require("../utils/string-utils.js");
 
 module.exports = {
 
-    serializeCandidatePropertyFromArray: function(args, year) {
+    deserializeCandidatePropertyFromLine: function(line, year) {
         var obj = {};
             var it = 2;
-            var l = args;
+            var l = string.replaceAll(line,'"', '').split(";");            
             
             obj.election_year = l[it++];
             obj.election_desc = l[it++];
