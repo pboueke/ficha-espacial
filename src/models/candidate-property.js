@@ -19,8 +19,6 @@ module.exports = {
             obj.property_value = l[it++];
             obj.last_update_date = l[it++];
             obj.last_update_hour = l[it++];
-            obj.candidate_link = "tre-consulta-cand/" + obj.candidate_ui;
-
             
             return obj;
 

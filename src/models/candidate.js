@@ -54,7 +54,7 @@ module.exports = {
             obj.sit_tot_turn_code = l[it++];
             obj.sit_tot_turn_desc = l[it++];
             obj.nm_email = l[it++];
-            
+        
             return obj;
         }
         throw utils.error("Unsuported election year for candidate serialization");
