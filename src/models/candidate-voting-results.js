@@ -41,7 +41,8 @@ module.exports = {
             obj.legend_composition = l[it++];
             obj.total_votes = l[it++];
             obj.transito = l[it++];
-
+            obj.candidate_link = "tre-consulta-cand/" + obj.candidate_ui;
+            
             return obj;
         }
         throw utils.error("Unsuported election year for candidate serialization");
