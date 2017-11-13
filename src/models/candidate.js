@@ -18,7 +18,7 @@ module.exports = {
             obj.job_cod = l[it++];
             obj.job_desc = l[it++];
             obj.candidate_name = l[it++];
-            it++; //skip SEQUENCIAL_CANDIDATO
+            obj.ui = l[it++]; // unique id
             obj.candidate_num = l[it++];
             obj.candidate_CPF = l[it++];
             obj.candidate_urn_name = l[it++];
@@ -53,7 +53,6 @@ module.exports = {
             obj.sit_tot_turn_code = l[it++];
             obj.sit_tot_turn_desc = l[it++];
             obj.nm_email = l[it++];
-            obj._key = obj.year+obj.candidate_CPF
             
             return obj;
         }

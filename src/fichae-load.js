@@ -4,6 +4,7 @@ var util = require("util");
 var program = require('commander');
 var arangojs = require('arangojs');
 var candidate = require("./models/candidate.js");
+var property = require("./models/candidate-property.js");
 var string = require("./utils/string-utils.js");
 
 program
@@ -29,23 +30,29 @@ const db = new arangojs.Database({
 });
 
 console.log("Loading source " + args[0] + " " + args[1] + " from "+ args[2])
+const dataCol = db.collection(args[0])
+var lineReader = require('readline').createInterface({
+    input: require('fs').createReadStream(args[2])
+  });
+
 
 if (args[0] === "tre-consulta-cand") {
-    const col = db.collection(args[0])
-    var counter = 0;
-
-    var lineReader = require('readline').createInterface({
-        input: require('fs').createReadStream(args[2])
-      });
 
     lineReader.on('line', function (line) {
         var l = string.replaceAll(line,'"', '').split(";");
         var obj = candidate.serializeCandidateFromArray(l, args[1]);
         
-        console.log("["+obj.year+"]["+args[0]+"] Saving candidate: " + obj._key);
-        col.save(obj);
-        counter += 1;
+        console.log("["+obj.year+"]["+args[0]+"] Saving candidate: " + obj.candidate_name);
+        dataCol.save(obj);
       });
 
-    console.log("Total number of registers saved: " + counter);
+} else if (args[0] === "tre-bem-candidato") {
+    
+    lineReader.on('line', function (line) {
+        var l = string.replaceAll(line,'"', '').split(";");
+        var obj = property.serializeCandidatePropertyFromArray(l, args[1]);
+        
+        console.log("["+obj.year+"]["+args[0]+"] Saving property: " + obj.property_detail);
+        dataCol.save(obj);
+      });
 };
