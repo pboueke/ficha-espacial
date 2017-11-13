@@ -6,7 +6,9 @@ var arangojs = require('arangojs');
 var candidate = require("./models/candidate.js");
 var property = require("./models/candidate-property.js");
 var result = require("./models/candidate-voting-results.js");
+var voter = require("./models/voter-profile.js")
 var string = require("./utils/string-utils.js");
+var readline = require('linebyline');
 
 program
     .option('-f, --force', 'force installation')
@@ -32,15 +34,13 @@ const db = new arangojs.Database({
 
 console.log("Loading source " + args[0] + " " + args[1] + " from "+ args[2])
 const dataCol = db.collection(args[0])
-var lineReader = require('readline').createInterface({
-    input: require('fs').createReadStream(args[2])
-  });
+var file = readline(args[2], {retainBuffer: false});
 
 
 if (args[0] === "tre-consulta-cand") {
 
-    lineReader.on('line', function (line) {
-        var obj = candidate.deserializeCandidateFromLine(line, args[1]);
+    file.on('line', function (line) {
+        let obj = candidate.deserializeCandidateFromLine(line, args[1]);
         
         console.log("["+obj.year+"]["+args[0]+"] Saving candidate: " + obj.candidate_name);
         dataCol.save(obj);
@@ -48,9 +48,8 @@ if (args[0] === "tre-consulta-cand") {
 
 } else if (args[0] === "tre-bem-candidato") {
     
-    lineReader.on('line', function (line) {
-        var l = string.replaceAll(line,'"', '').split(";");
-        var obj = property.deserializeCandidatePropertyFromLine(line, args[1]);
+    file.on('line', function (line) {
+        let obj = property.deserializeCandidatePropertyFromLine(line, args[1]);
         
         console.log("["+obj.year+"]["+args[0]+"] Saving property: " + obj.property_detail);
         dataCol.save(obj);
@@ -58,10 +57,19 @@ if (args[0] === "tre-consulta-cand") {
 
 } else if (args[0] === "tre-votacao-candidato") {
     
-    lineReader.on('line', function (line) {
-        var obj = result.deserializeCandidateVotingResultsFromLine(line, args[1]);
+    file.on('line', function (line) {
+        let obj = result.deserializeCandidateVotingResultsFromLine(line, args[1]);
         
         console.log("["+obj.year+"]["+args[0]+"] Saving result: " + obj.zone_code);
+        dataCol.save(obj);
+      });
+      
+} else if (args[0] === "tre-perfil-eleitor") {
+    
+    file.on('line', function (line) {
+        let obj = voter.deserializeVoterProfileFromLine(line, args[1]);
+        
+        console.log("["+obj.year+"]["+args[0]+"] Saving voter profile: " + obj.zone_number);
         dataCol.save(obj);
       });
 };

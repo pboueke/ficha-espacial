@@ -9,6 +9,7 @@ module.exports = {
             var it = 2;
             var l = string.replaceAll(line,'"', '').split(";");            
             
+            obj.year = year;
             obj.election_year = l[it++];
             obj.election_desc = l[it++];
             obj.uf = l[it++];
