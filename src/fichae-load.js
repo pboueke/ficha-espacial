@@ -7,6 +7,7 @@ var candidate = require("./models/candidate.js");
 var property = require("./models/candidate-property.js");
 var result = require("./models/candidate-voting-results.js");
 var voter = require("./models/voter-profile.js")
+var firjan = require("./models/firjan-index")
 var string = require("./utils/string-utils.js");
 var readline = require('linebyline');
 
@@ -72,4 +73,14 @@ if (args[0] === "tre-consulta-cand") {
         console.log("["+obj.year+"]["+args[0]+"] Saving voter profile: " + obj.zone_number);
         dataCol.save(obj);
       });
+
+} else if (args[0].indexOf("firjan-") > -1) {
+    
+    file.on('line', function (line) {
+        let obj = firjan.deserializeFirjanIndexFromLine(line, args[1]);
+        
+        console.log("["+obj.year+"]["+args[0]+"] Saving city score: " + obj.city_name);
+        dataCol.save(obj);
+      });
+      
 };

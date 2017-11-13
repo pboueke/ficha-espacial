@@ -62,3 +62,9 @@ The readme file (LEIAME.pdf) provided by the tre data source contains the table 
     * Source: http://www.tre-rj.jus.br/site/eleicoes/repositorio_dados/repositorio.jsp
     * Example: perfil_eleitor_secao_2016_RJ.txt @ Candidatos > 2016 > Perfil do eleitorado por seção eleitoral
     * Loading: "node fichae load tre-perfil-eleitor 2016 ~/Data/perfil_eleitor_secao_2016_RJ.txt"
+
+5. firjan-*
+    * Type: .txt delimited by "\t"
+    * Source: http://www.firjan.com.br/ifdm/consulta-ao-indice/
+    * Example: any text file with a header like "Code\tRegion\tState\tCity\tScore\tRanking", generated from one of the .xlsx files at the firjan website.
+    * Loading: "node fichae load firjan-geral 2016 ~/Data/firjan-geral_2016_RJ.txt"
