@@ -1,0 +1,25 @@
+{
+  "name": "ficha-espacial",
+  "version": "1.0.0",
+  "description": "Projeto que visa realizar o cruzamento de dados eleitorais brasileiros com indicadores sociais a partir de dados abertos e geolocalizados",
+  "main": "src/fichae.js",
+  "scripts": {
+    "start": "node src/fichae.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pboueke/ficha-espacial.git"
+  },
+  "author": "Pedro Boueke <phboueke@gmail.com> (https://pboueke.github.io/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pboueke/ficha-espacial/issues"
+  },
+  "homepage": "https://github.com/pboueke/ficha-espacial#readme",
+  "dependencies": {
+    "arangojs": "4.5.1",
+    "commander": "2.11.0",
+    "dotenv": "4.0.0"
+  }
+}
