@@ -12,13 +12,12 @@ var string = require("./utils/string-utils.js");
 var lineByLine = require('n-readlines');
 
 program
-    .option('-f, --force', 'force installation')
     .parse(process.argv);
 
 var args = program.args;
 
 process.on('unhandledRejection', (err, p) => { 
-    console.error(p)
+    console.error(err)
 })
 
 if (args.length < 1 || args.length > 3) { 
@@ -65,14 +64,15 @@ processLine(liner.next());
 
 async function processLine (line) {
     if (line === null || !line) { 
-        console.log("All Done"); 
-        return ;
+        console.log("All Done, total inserted: " + counter); 
+        process.exit();
     };
 
     let obj = deserializer(line.toString('utf-8'), args[1]);
     counter += 1;
     console.log("["+obj.year+"] ["+args[0]+"] " + counter + " Saving object");
-    await dataCol.save(obj);
-
+    try {
+        await dataCol.save(obj);
+    } catch (err) {console.log("Already exists, skipped")};
     Promise.resolve().then(() => processLine(liner.next()));
 };

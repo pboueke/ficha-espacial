@@ -17,6 +17,7 @@ module.exports = {
             obj.score = l[4]       
             obj.rank = l[5];
             obj.location = string.normalizeCity(obj.uf, obj.city_name);
+            obj._key = obj.location + "_" + obj.year;
             
             return obj;
 
