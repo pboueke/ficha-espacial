@@ -17,6 +17,10 @@ program
 
 var args = program.args;
 
+process.on('unhandledRejection', (err, p) => { 
+    console.error(p)
+})
+
 if (args.length < 1 || args.length > 3) { 
     throw util.error("Incorrect number of arguments. Make sure you are passing the data source, its year and its path");
     // $ fichae load tre-consulta-cand 2016 path/to/file
@@ -65,7 +69,7 @@ async function processLine (line) {
         return ;
     };
 
-    let obj = deserializer(line.toString('ascii'), args[1]);
+    let obj = deserializer(line.toString('utf-8'), args[1]);
     counter += 1;
     console.log("["+obj.year+"] ["+args[0]+"] " + counter + " Saving object");
     await dataCol.save(obj);
