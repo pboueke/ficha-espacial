@@ -9,7 +9,7 @@ var result = require("./models/candidate-voting-results.js");
 var voter = require("./models/voter-profile.js")
 var firjan = require("./models/firjan-index")
 var string = require("./utils/string-utils.js");
-var readline = require('linebyline');
+var lineByLine = require('n-readlines');
 
 program
     .option('-f, --force', 'force installation')
@@ -35,52 +35,40 @@ const db = new arangojs.Database({
 
 console.log("Loading source " + args[0] + " " + args[1] + " from "+ args[2])
 const dataCol = db.collection(args[0])
-var file = readline(args[2], {retainBuffer: false});
+var liner = new lineByLine(args[2]);
 
+var counter = 0;
+var deserializer = function() { throw "Unknown source"; };
+switch(args[0]) {
+    case "tre-consulta-cand":
+        deserializer = candidate.deserializeCandidateFromLine;
+        break;
+    case "tre-bem-candidato":
+        deserializer = property.deserializeCandidatePropertyFromLine;
+        break;
+    case "tre-votacao-candidato":
+        deserializer = cresult.deserializeCandidateVotingResultsFromLine;
+        break;
+    case "tre-perfil-eleitor":
+        deserializer = voter.deserializeVoterProfileFromLine;
+        break;
+    case "firjan-geral":
+        deserializer = firjan.deserializeFirjanIndexFromLine;
+        break;
+}
 
-if (args[0] === "tre-consulta-cand") {
+processLine(liner.next());
 
-    file.on('line', function (line) {
-        let obj = candidate.deserializeCandidateFromLine(line, args[1]);
-        
-        console.log("["+obj.year+"]["+args[0]+"] Saving candidate: " + obj.candidate_name);
-        dataCol.save(obj);
-      });
+async function processLine (line) {
+    if (line === null || !line) { 
+        console.log("All Done"); 
+        return ;
+    };
 
-} else if (args[0] === "tre-bem-candidato") {
-    
-    file.on('line', function (line) {
-        let obj = property.deserializeCandidatePropertyFromLine(line, args[1]);
-        
-        console.log("["+obj.year+"]["+args[0]+"] Saving property: " + obj.property_detail);
-        dataCol.save(obj);
-      });
+    let obj = deserializer(line.toString('ascii'), args[1]);
+    counter += 1;
+    console.log("["+obj.year+"] ["+args[0]+"] " + counter + " Saving object");
+    await dataCol.save(obj);
 
-} else if (args[0] === "tre-votacao-candidato") {
-    
-    file.on('line', function (line) {
-        let obj = result.deserializeCandidateVotingResultsFromLine(line, args[1]);
-        
-        console.log("["+obj.year+"]["+args[0]+"] Saving result: " + obj.zone_code);
-        dataCol.save(obj);
-      });
-      
-} else if (args[0] === "tre-perfil-eleitor") {
-    
-    file.on('line', function (line) {
-        let obj = voter.deserializeVoterProfileFromLine(line, args[1]);
-        
-        console.log("["+obj.year+"]["+args[0]+"] Saving voter profile: " + obj.zone_number);
-        dataCol.save(obj);
-      });
-
-} else if (args[0].indexOf("firjan-") > -1) {
-    
-    file.on('line', function (line) {
-        let obj = firjan.deserializeFirjanIndexFromLine(line, args[1]);
-        
-        console.log("["+obj.year+"]["+args[0]+"] Saving city score: " + obj.city_name);
-        dataCol.save(obj);
-      });
-      
+    Promise.resolve().then(() => processLine(liner.next()));
 };
