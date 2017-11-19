@@ -4,7 +4,7 @@
   "description": "Projeto que visa realizar o cruzamento de dados eleitorais brasileiros com indicadores sociais a partir de dados abertos e geolocalizados",
   "main": "src/fichae.js",
   "scripts": {
-    "start": "node src/fichae.js",
+    "run": "node src/fichae.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

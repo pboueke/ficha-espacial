@@ -1,6 +1,16 @@
 # ficha-espacial
 Projeto que visa realizar o cruzamento de dados eleitorais brasileiros com indicadores sociais a partir de dados abertos e geolocalizados
 
+### Modeling
+
+Simply put, the idea is to use a social indicator variation to infer a relative effectiveness rate for the elected political entities over the years for the many cities of Brazil. 
+
+For the first iteration, we will be using the social and economic indicators produced by FRIJAN and the TRERJ election data, which have the needed year granularity for a proper yearly analysis. 
+
+The basic modelling consists of creating yearly nodes for cities, containing the indicator value for that year. Those nodes are connected to the following year with an edge of wheight defined by the indicator variation. Political entitiy nodes (say, the elected officials and legislators) are also connected to the yearly city nodes, but by wheightless edges. All political nodes are connected to all cities for which they have been elected.
+
+By such model, we can iterate over the yearly variations for cities, for political entities and for the global state as a hole. Hopefully, this will also allow us to apply graph related analysis to the problem. 
+
 ## Setup
 
 ### Node
