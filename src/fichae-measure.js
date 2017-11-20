@@ -41,21 +41,28 @@ var sv = program.save || debug.save;
 if (ms === "m1")  { 
     console.log(`[${ms}] Starting saving measuremnts at ${sv}`);
     (async () => {
-        let counter = 0;
+        var counter = 0;
+        var ct_counter = 0;
+        var rd_counter = 0
         var col1 = db.collection("elected-candidate-person");
         var col2 = db.collection("elected-candidate-edges");
         var col3 = db.collection(sv);
         var col4 = db.collection("firjan-geral-edges");
-        const q = arangojs.aql`
-            FOR cand IN ${col1}
-            RETURN cand
-            `;
-        console.log(q);
-        const cur = await db.query(q);
 
+        const cur = await col1.all();
+        let size = cur.count;
+        
+        var buffer = []
+        var buffer_couter = 0;
         cur.each(async function (val) {
-            processItem(await val);
-        });
+            buffer.push(await val);
+            console.log(buffer_couter++)
+        }).then(()=> {
+            buffer.forEach(async (item) => {
+                await processItem(item);
+                rd_counter += 1;
+            })
+        })
 
         //processItem(cur.next());
 
@@ -71,62 +78,65 @@ if (ms === "m1")  {
             RETURN edge
             `;
 
-            let cur1  = await db.query(sq1);
-
-            calculateM1(await cur1.next());
-
             let edge_counter = 0;
             let delta_sum = 0;
             let year_sum = {};
             let year_count = {}
 
-            async function calculateM1 (val) {
-                if (await val === null || !val) {                    
-                    let ya = [];
-                    Object.keys(year_sum).forEach(function(key) {
-                        ya.push({
-                            year: key,
-                            value: (year_sum[key]/year_count[key])
-                        })
-                      });
-        
-                    let measure = {
-                        _key: item._key + "_m1",
-                        value: (delta_sum/edge_counter),
-                        years: ya,
-                        candidate: item._id
-                    }
-        
-                    console.log(`[${counter}] Saving measure: ${measure._key}`);
-                    try{
-                        await col3.save(measure);
-                    } catch (er2) {};
-        
-                    counter += 1;
-                    return;
+            let cur1  = await db.query(sq1);
+            cur1.each(async(val)=>{
+                await calculateM1(await val)
+            }).then(async ()=>{
+
+                let ya = [];
+                Object.keys(year_sum).forEach(function(key) {
+                    ya.push({
+                        year: key,
+                        value: (year_sum[key]/year_count[key])
+                    })
+                });
+
+                let measure = {
+                    _key: item._key + "_m1",
+                    value: (delta_sum/edge_counter),
+                    years: ya,
+                    candidate: item._id
                 }
-                console.log(`[${counter}] Parsing edge: ${val._key}`);
+
+                try{
+                    await col3.save(measure);
+                    console.log(`[${counter}  ${ct_counter} / ${rd_counter} / ${size}] Saved measure: ${measure._key}`);
+                    counter += 1;                    
+                    
+                } catch (er2) {
+                    console.log(`[${counter}  ${ct_counter} / ${rd_counter} / ${size}] Measure already in base: ${measure._key}`);                    
+                };
+            })
+
+            async function calculateM1 (val) {
+                console.log(`[${counter} / ${ct_counter} / ${rd_counter} / ${size}] Parsing edge: ${val._key}`);
+                
                 let abort = false;
                 try {
                     let arr = val._to.split("_");
                     var id = val._to.replace("/", "-edges/") + "_" + (parseInt(arr[arr.length-1]) + 1).toString();
                     var city = await col4.document(id);
+                    ct_counter += 1;
                 } catch (ex) { 
                     abort = true; 
-                    console.log(`[${counter}] Skipping edge from: ${val._from}`);
+                    ct_counter += 1;
+                    console.log(`[${counter} / ${ct_counter} / ${rd_counter} / ${size}] Skipping edge: ${id}`);
                 }
                 
                 if (!abort) {
+                    console.log(`[${counter} / ${ct_counter} / ${rd_counter} / ${size}] Processing edge: ${id}`);                    
                     edge_counter += 1;
                     delta_sum += parseFloat(await city.delta) || 0;
                     let aux = val._key.split("_");
                     year_sum[aux[aux.length-1]] = (year_sum[aux[aux.length-1]] || 0) + (parseFloat(city.delta)||0);
                     year_count[aux[aux.length-1]] = (year_count[aux[aux.length-1]] || 0) + 1;
                 }
-
-                // we can use this iterate method here because the cursor size is always less than 1k
-                // this allows us to do everything synchronously
-                Promise.resolve().then(async () => calculateM1(await cur1.next()));
+                return;
             }
         }
     })();
