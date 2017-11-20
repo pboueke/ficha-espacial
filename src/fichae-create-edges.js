@@ -26,7 +26,8 @@ const username = process.env.ARANGODB_USERNAME;
 const password = process.env.ARANGODB_PASSWORD;
 const db = new arangojs.Database({
     url: `http://${username}:${password}@${host}:${port}`,
-    databaseName: database
+    databaseName: database,
+    reretryConnection:true
 });
 
 var debug = {
@@ -49,10 +50,15 @@ if (tp === "years")  {
         const q = arangojs.aql`
             FOR city IN ${col}
             FILTER city.year == ${yr.toString()}
+            LIMIT 6000
             RETURN city
             `;
         console.log(q);
-        const cur = await db.query(q)
+        const cur = await db.query(q);
+
+        cur.each(async function (val) {
+            processItem(await val);
+        });
 
         processItem(cur.next());
 
@@ -68,6 +74,7 @@ if (tp === "years")  {
             try {
                 var future_city = await db.collection(src).document(city.location+"_"+(parseInt(city.year)+1).toString());
             } catch (err) {
+                console.log (err.message);
                 abort = true;
             }
 
@@ -78,14 +85,20 @@ if (tp === "years")  {
             }
 
             let edge = {
+                _key: city.location + "_" + city.year + "_" + future_city.year,
                 _from: city._id,
                 _to: future_city._id,
                 location: city.location,
-                delta: (parseFloat(future_city.score)-parseFloat(city.score))
+                delta: (parseFloat((future_city.score||"0").replace(",","."))-parseFloat((city.score||"0").replace(",",".")))
             }
 
-            await db.collection(src+"-edges").save(edge);
-            edge_counter += 1;
+            try {
+                await db.collection(src+"-edges").save(edge);
+                edge_counter += 1;
+            } catch (err) {
+                console.log(err.message)
+                console.log(`[${counter} / ${edge_counter}] City already connected: ${edge._key}`)
+            }
 
             Promise.resolve().then(() => addYearEdge(future_city));
         }
@@ -98,7 +111,13 @@ if (tp === "years")  {
             await addYearEdge(await item);
             counter += 1;
 
-            Promise.resolve().then(() => processItem( cur.next()));
+            /*while (!cur.hasNext()) {
+                setTimeout(function() {
+                    console.log('Waiting cursor');
+                }, 3000);
+            }
+
+            Promise.resolve().then(() => processItem( cur.next()));*/
         }
     })();
 } else {
