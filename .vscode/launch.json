@@ -11,6 +11,13 @@
             "name": "Create Edges",
             "program": "${workspaceFolder}/src/fichae-create-edges.js",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "M1",
+            "program": "${workspaceFolder}/src/fichae-measure.js",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
