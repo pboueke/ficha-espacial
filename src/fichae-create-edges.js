@@ -27,7 +27,7 @@ const password = process.env.ARANGODB_PASSWORD;
 const db = new arangojs.Database({
     url: `http://${username}:${password}@${host}:${port}`,
     databaseName: database,
-    reretryConnection:true
+    retryConnection:true
 });
 
 var debug = {
@@ -50,7 +50,6 @@ if (tp === "years")  {
         const q = arangojs.aql`
             FOR city IN ${col}
             FILTER city.year == ${yr.toString()}
-            LIMIT 6000
             RETURN city
             `;
         console.log(q);
@@ -95,6 +94,7 @@ if (tp === "years")  {
             try {
                 await db.collection(src+"-edges").save(edge);
                 edge_counter += 1;
+                console.log(`[${counter} / ${edge_counter}] Saved new edge: ${edge._key}`)
             } catch (err) {
                 console.log(err.message)
                 console.log(`[${counter} / ${edge_counter}] City already connected: ${edge._key}`)
@@ -111,13 +111,7 @@ if (tp === "years")  {
             await addYearEdge(await item);
             counter += 1;
 
-            /*while (!cur.hasNext()) {
-                setTimeout(function() {
-                    console.log('Waiting cursor');
-                }, 3000);
-            }
-
-            Promise.resolve().then(() => processItem( cur.next()));*/
+            //Promise.resolve().then(() => processItem( cur.next()));
         }
     })();
 } else {

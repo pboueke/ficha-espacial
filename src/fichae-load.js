@@ -7,6 +7,7 @@ var candidate = require("./models/candidate.js");
 var property = require("./models/candidate-property.js");
 var result = require("./models/candidate-voting-results.js");
 var voter = require("./models/voter-profile.js")
+var elected = require("./models/elected-candidate.js")
 var firjan = require("./models/firjan-index")
 var string = require("./utils/string-utils.js");
 var lineByLine = require('n-readlines');
@@ -58,6 +59,8 @@ switch(args[0]) {
     case "firjan-geral":
         deserializer = firjan.deserializeFirjanIndexFromLine;
         break;
+    case "elected-candidate": 
+        deserializer = elected.deserializeElectedCandidateFromLine;
 }
 
 processLine(liner.next());
