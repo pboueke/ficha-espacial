@@ -1,4 +1,5 @@
 # ficha-espacial
+
 Projeto que visa realizar o cruzamento de dados eleitorais brasileiros com indicadores sociais a partir de dados abertos e geolocalizados
 
 ## Modelling
@@ -43,6 +44,8 @@ There are examples of loading data at the 'Data Sources' section.
 
 #### Creating Data
 
+##### Edges
+
 Graphs require edges. This is how you create them.
 
 ```$ node fichae create-edges -t <type> -s <source> -y <year> -d <destiny>```
@@ -64,7 +67,19 @@ Graphs require edges. This is how you create them.
     * Required
     * The collection for the ```_from``` attribure of the edge.
 
+##### Measurements
 
+```$ node fichae measure -m <measure> -s <collection>```
+
+* ```-m, --measure```
+    * Required
+    * The type of measure. Supported types:
+        * ```m1```: a simple average of all indicator vaariations for firjan type indicators, for all the cities for each candidate by year
+        * ```m2```: same as ```m1```, but subtracts the yearly average increase from each time the indicatior variation was measured
+    
+* ```-s, --save```
+    * Required
+    * The collection where the indicator will be saved
 
 ## Data Sources
 

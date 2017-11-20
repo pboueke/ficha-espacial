@@ -30,8 +30,8 @@ const db = new arangojs.Database({
 });
 
 var debug = {
-    measure: "m1",
-    save: "measure-m1",
+    measure: "m2",
+    save: "measure-m2",
 }
 
 var ms = program.measure || debug.measure;
@@ -44,7 +44,7 @@ if (ms === "m1")  {
         var counter = 0;
         var ct_counter = 0;
         var rd_counter = 0
-        var col1 = db.collection("elected-candidate-person");
+        var col1 = db.collection("measure-m1");
         var col2 = db.collection("elected-candidate-edges");
         var col3 = db.collection(sv);
         var col4 = db.collection("firjan-geral-edges");
@@ -140,6 +140,78 @@ if (ms === "m1")  {
             }
         }
     })();
-} else {
-    throw (tp + " is not a supported type");
+} else if (ms === "m2")  { 
+    console.log(`[${ms}] Starting saving measuremnts at ${sv}`);
+    (async () => {
+        var counter = 0;
+        var ct_counter = 0;
+        var rd_counter = 0
+        var col1 = db.collection("measure-m1");
+        var col2 = db.collection(sv);
+
+        const cur = await col1.all();
+        let size = cur.count;
+
+        var yearly_delta_sum = {};
+        var yearly_counter = {};
+        var yearly_delta = {};
+        
+        var buffer = []
+        var buffer_couter = 0;
+        cur.each(async function (val) {
+            buffer.push(await val);
+            console.log("Reading values from db " + buffer_couter++)
+        }).then(()=> {
+            buffer.forEach(async (item) => {
+                getSums(await item);
+                rd_counter += 1;
+            });
+        }).then(() => {
+            console.log("Calculating means...")
+            getMeans();
+            console.log("Means calculated.")
+        }).then(() => {
+            buffer.forEach(async (item) => { 
+                let aux_val = 0;
+                let aux_years = {}
+                let c = 0;
+                item.years.forEach(function(obj) {
+                    let v = obj.value - yearly_delta[obj.year];
+                    aux_years[obj.year] = v;  
+                    aux_val += v;
+                    c += 1;
+                });
+                let new_item = item;
+                delete new_item._id;
+                new_item._key = new_item._key.substring(0, new_item._key.length -3) + "m2";
+                new_item.years = aux_years;
+                new_item.value = aux_val / c;
+                counter += 1;
+                try{
+                    await col2.save(new_item);
+                    console.log(`${counter}] New measure saved: ${new_item._key}` );
+                } catch (err) {console.log(`${counter}] Measure already in base: ${new_item._key}`);}
+            });
+        });
+
+        function getSums(item) {
+            if (item.years && item.years.length > 0) {
+                for (let y in item.years) {
+                    if (item.years[y].year && item.years[y].value) {
+                        yearly_delta_sum[item.years[y].year] = (yearly_delta_sum[item.years[y].year]||0) + item.years[y].value;
+                        yearly_counter[item.years[y].year] = (yearly_counter[item.years[y].year]||0) + 1;
+                    }
+                }
+            }
+        }
+
+        function getMeans() {
+            Object.keys(yearly_delta_sum).forEach(function(key) {
+                yearly_delta[key] = (yearly_delta_sum[key]/yearly_counter[key])
+            });
+        }
+
+    })();
+    } else {
+    throw (ms + " is not a supported measure");
 }
