@@ -40,7 +40,7 @@ var debug = {
 
 var yr = program.year || debug.year;
 var tp = program.type || debug.type;
-var src = program.src || debug.source;
+var src = program.source || debug.source;
 var dst = program.destiny || debug.destiny;
 
 // adds relationships between yearly the objects from the same city 
@@ -121,6 +121,7 @@ if (tp === "years")  {
     console.log(`[${tp}] Starting from ${yr} for source ${src}`);
     (async () => {
         let counter = 0;
+        let rc = 0;
         let edge_counter = 0;
         var col = db.collection(src);
         const q = arangojs.aql`
@@ -139,66 +140,78 @@ if (tp === "years")  {
 
         async function processItem(item) {
             if (await item === null || !item) {
-                console.log("All Done, total inserted: " + counter); 
+                console.log(`All Done, total inserted: ${rc} / ${counter} / ${edge_counter} `); 
                 process.exit();
             }
 
+            let candidate = {
+                _key: string.normalizePolName(item.candidate_name),
+                candidate_name: item.candidate_name
+            }
+            
+            try {
+                await db.collection(src+"-person").save(candidate);
+                console.log(`[${rc} / ${counter} / ${edge_counter}] Saved new candidate: ${candidate._key}`)
+                counter += 1;
+            } catch (err) {
+                //console.log(err.message)
+                console.log(`[${rc} / ${counter} / ${edge_counter}] Candidate already in base: ${candidate._key}`)
+            }
+
             let edge1 = {
-                _key: item.canidate_name + "_" + (parseInt(item.year)+0).toString(),
-                _from: item._id,
+                _key: string.normalizePolName(item.candidate_name) + "_" + item.location + "_" + (parseInt(item.year)+0).toString(),
+                _from: src+"-person/" + string.normalizePolName(item.candidate_name),
                 _to: dst + "/" + item.location + "_" + (parseInt(item.year)+0).toString(),
             }
             try {
                 await db.collection(src+"-edges").save(edge1);
                 edge_counter += 1;
-                console.log(`[${counter} / ${edge_counter}] Saved new edge: ${edge1._key}`)
+                console.log(`[${rc} / ${counter} / ${edge_counter}] Saved new edge: ${edge1._key}`)
             } catch (err) {
                 console.log(err.message)
-                console.log(`[${counter} / ${edge_counter}] Candidate and city already connected: ${edge1._key}`)
+                console.log(`[${rc} / ${counter} / ${edge_counter}] Candidate and city already connected: ${edge1._key}`)
             }
             let edge2 = {
-                _key: item.canidate_name + "_" + (parseInt(item.year)+1).toString(),
-                _from: item._id,
+                _key: string.normalizePolName(item.candidate_name) + "_" + item.location + "_" + (parseInt(item.year)+1).toString(),
+                _from: src+"-person/" + string.normalizePolName(item.candidate_name),
                 _to: dst + "/" + item.location + "_" + (parseInt(item.year)+1).toString(),
             }
             try {
                 await db.collection(src+"-edges").save(edge2);
                 edge_counter += 1;
-                console.log(`[${counter} / ${edge_counter}] Saved new edge: ${edge2._key}`)
+                console.log(`[${rc} / ${counter} / ${edge_counter}] Saved new edge: ${edge2._key}`)
             } catch (err) {
                 console.log(err.message)
-                console.log(`[${counter} / ${edge_counter}] Candidate and city already connected: ${edge2._key}`)
+                console.log(`[${rc} / ${counter} / ${edge_counter}] Candidate and city already connected: ${edge2._key}`)
             }
             let edge3 = {
-                _key: item.canidate_name + "_" + (parseInt(item.year)+2).toString(),
-                _from: item._id,
+                _key: string.normalizePolName(item.candidate_name) + "_" + item.location + "_" + (parseInt(item.year)+2).toString(),
+                _from: src+"-person/" + string.normalizePolName(item.candidate_name),
                 _to: dst + "/" + item.location + "_" + (parseInt(item.year)+2).toString(),
             }
             try {
                 await db.collection(src+"-edges").save(edge3);
                 edge_counter += 1;
-                console.log(`[${counter} / ${edge_counter}] Saved new edge: ${edge3._key}`)
+                console.log(`[${rc} / ${counter} / ${edge_counter}] Saved new edge: ${edge3._key}`)
             } catch (err) {
                 console.log(err.message)
-                console.log(`[${counter} / ${edge_counter}] Candidate and city already connected: ${edge3._key}`)
+                console.log(`[${rc} / ${counter} / ${edge_counter}] Candidate and city already connected: ${edge3._key}`)
             }
             let edge4 = {
-                _key: item.canidate_name + "_" + (parseInt(item.year)+3).toString(),
-                _from: item._id,
+                _key: string.normalizePolName(item.candidate_name) + "_" + item.location + "_" + (parseInt(item.year)+3).toString(),
+                _from: src+"-person/" + string.normalizePolName(item.candidate_name),
                 _to:  dst + "/" + item.location + "_" + (parseInt(item.year)+3).toString(),
             }
             try {
                 await db.collection(src+"-edges").save(edge4);
                 edge_counter += 1;
-                console.log(`[${counter} / ${edge_counter}] Saved new edge: ${edge4._key}`)
+                console.log(`[${rc} / ${counter} / ${edge_counter}] Saved new edge: ${edge4._key}`)
             } catch (err) {
                 console.log(err.message)
-                console.log(`[${counter} / ${edge_counter}] Candidate and city already connected: ${edge4._key}`)
+                console.log(`[${rc} / ${counter} / ${edge_counter}] Candidate and city already connected: ${edge4._key}`)
             }
             
-
-            counter += 1;
-
+            rc += 1;
             //Promise.resolve().then(() => processItem( cur.next()));
         }
     })();

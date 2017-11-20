@@ -18,7 +18,7 @@ module.exports = {
             obj.status = l[it++];
             obj.votes = l[it++];
             obj.location = string.normalizeCity(obj.uf, obj.city_name);
-            obj._key = string.normalizePolName(obj.candidate_name);
+            obj._key = string.normalizePolName(obj.candidate_name)+"_"+obj.location+"_"+year;
             
             return obj;
 

@@ -1,13 +1,13 @@
 # ficha-espacial
 Projeto que visa realizar o cruzamento de dados eleitorais brasileiros com indicadores sociais a partir de dados abertos e geolocalizados
 
-### Modeling
+## Modelling
 
 Simply put, the idea is to use a social indicator variation to infer a relative effectiveness rate for the elected political entities over the years for the many cities of Brazil. 
 
 For the first iteration, we will be using the social and economic indicators produced by FRIJAN and the TRERJ election data, which have the needed year granularity for a proper yearly analysis. 
 
-The basic modelling consists of creating yearly nodes for cities, containing the indicator value for that year. Those nodes are connected to the following year with an edge of wheight defined by the indicator variation. Political entitiy nodes (say, the elected officials and legislators) are also connected to the yearly city nodes, but by wheightless edges. All political nodes are connected to all cities for which they have been elected.
+The basic model consists of creating yearly nodes for cities, containing the indicator value for that year. Those nodes are connected to the following year with an edge of wheight defined by the indicator variation. Political entitiy nodes (say, the elected officials and legislators) are also connected to the yearly city nodes, but by wheightless edges. All political nodes are connected to all cities for which they have been elected.
 
 By such model, we can iterate over the yearly variations for cities, for political entities and for the global state as a hole. Hopefully, this will also allow us to apply graph related analysis to the problem. 
 
@@ -40,6 +40,31 @@ Data loading is done by using the 'load' command, currently as:
 ```$ node fichae load <source> <year> <path/to/file> ```
 
 There are examples of loading data at the 'Data Sources' section.
+
+#### Creating Data
+
+Graphs require edges. This is how you create them.
+
+```$ node fichae create-edges -t <type> -s <source> -y <year> -d <destiny>```
+
+* ```-t, --type```
+    * Required
+    * Possible values:
+        * ```years```: creates edges between firjan index nodes (cities), containing a delta attribute consisting of the firjan index variation
+        * ```elections```: creates edgest from candidates (elected-candidate-person vertexes) to cities (firjan-geral vertexes) 
+
+* ```-y, --year```
+    * Required
+    * The year, same as the second argument of the load command
+
+* ```-d , --destiny```
+    * Required only for type ```elections```. It is the cities collection, the ```_to``` source collection.
+
+* ```-s, --source```
+    * Required
+    * The collection for the ```_from``` attribure of the edge.
+
+
 
 ## Data Sources
 
@@ -80,3 +105,10 @@ The readme file (LEIAME.pdf) provided by the tre data source contains the table 
     * Source: http://www.firjan.com.br/ifdm/consulta-ao-indice/
     * Example: any text file with a header like "Code\tRegion\tState\tCity\tScore\tRanking", generated from one of the .xlsx files at the firjan website.
     * Loading: "node fichae load firjan-geral 2016 ~/Data/firjan-geral_2016_RJ.txt"
+
+### TRE - Custom
+
+1. elected-candidate
+    * type .csv delimited by ","
+    * Aggregated elections results by candidate and by city (see model: elected-candidate.js)
+    * Loading: "node fichae load elected-candidate 2012 ~/Data/eleicoes_2012.csv "
