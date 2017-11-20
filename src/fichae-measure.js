@@ -183,7 +183,7 @@ if (ms === "m1")  {
                 });
                 let new_item = item;
                 delete new_item._id;
-                new_item._key = new_item._key.substring(0, new_item._key.length -3) + "m2";
+                new_item._key = new_item._key.substring(0, new_item._key.length -2) + "m2";
                 new_item.years = aux_years;
                 new_item.value = aux_val / c;
                 counter += 1;
@@ -192,7 +192,7 @@ if (ms === "m1")  {
                     console.log(`${counter}] New measure saved: ${new_item._key}` );
                 } catch (err) {console.log(`${counter}] Measure already in base: ${new_item._key}`);}
             });
-        });
+        }) 
 
         function getSums(item) {
             if (item.years && item.years.length > 0) {
@@ -204,10 +204,12 @@ if (ms === "m1")  {
                 }
             }
         }
+        
 
         function getMeans() {
             Object.keys(yearly_delta_sum).forEach(function(key) {
                 yearly_delta[key] = (yearly_delta_sum[key]/yearly_counter[key])
+                console.log(`year: ${key}, average: ${yearly_delta[key]}`)
             });
         }
 
