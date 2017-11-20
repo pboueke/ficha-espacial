@@ -54,7 +54,7 @@ if (ms === "m1")  {
         const cur = await db.query(q);
 
         cur.each(async function (val) {
-            await processItem(await val);
+            processItem(await val);
         });
 
         //processItem(cur.next());
@@ -71,7 +71,7 @@ if (ms === "m1")  {
             RETURN edge
             `;
 
-            const cur1  = await db.query(sq1);
+            let cur1  = await db.query(sq1);
 
             calculateM1(await cur1.next());
 
@@ -98,7 +98,9 @@ if (ms === "m1")  {
                     }
         
                     console.log(`[${counter}] Saving measure: ${measure._key}`);
-                    await col3.save(measure);
+                    try{
+                        await col3.save(measure);
+                    } catch (er2) {};
         
                     counter += 1;
                     return;
@@ -126,34 +128,6 @@ if (ms === "m1")  {
                 // this allows us to do everything synchronously
                 Promise.resolve().then(async () => calculateM1(await cur1.next()));
             }
-
-            /*
-            cur1.each(async (val) => {
-                edge_counter += 1;
-                delta_sum += parseFloat(await val.delta);
-                let aux = val._key.split("_");
-                year_sum[aux[aux.length-1]] = (year_sum[aux[aux.length-1]] || 0) + parseFloat(val.delta);
-                year_count[aux[aux.length-1]] = (year_count[aux[aux.length-1]] || 0) + 1;
-            });
-
-            let ya = [];
-            Object.keys(year_sum).forEach(function(key) {
-                ya.push({
-                    year: key,
-                    value: (year_sum[key]/year_count)
-                })
-              });
-
-            let measure = {
-                _key: item._key + "_m1",
-                value: (delta_sum/edge_counter),
-                years: ya
-            }
-
-            console.log(`[${counter}] Saving measure: ${measure._key}`);
-            await col3.save(measure);
-
-            counter += 1;*/
         }
     })();
 } else {
