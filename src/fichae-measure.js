@@ -116,9 +116,9 @@ if (ms === "m1")  {
                 
                 if (!abort) {
                     edge_counter += 1;
-                    delta_sum += parseFloat(await city.delta);
+                    delta_sum += parseFloat(await city.delta) || 0;
                     let aux = val._key.split("_");
-                    year_sum[aux[aux.length-1]] = (year_sum[aux[aux.length-1]] || 0) + parseFloat(city.delta);
+                    year_sum[aux[aux.length-1]] = (year_sum[aux[aux.length-1]] || 0) + (parseFloat(city.delta)||0);
                     year_count[aux[aux.length-1]] = (year_count[aux[aux.length-1]] || 0) + 1;
                 }
 
