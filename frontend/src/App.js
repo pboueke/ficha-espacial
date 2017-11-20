@@ -3,12 +3,13 @@ import Ranking from "./Ranking"
 import './App.css';
 import 'semantic-ui-css/semantic.min.css';
 
-const m2ToCandidate = ({candidate_name, years, uf, city, value}) => ({
+const m2ToCandidate = ({candidate_name, years, uf, city, value, job}) => ({
   name: candidate_name,
   years: Object.keys(years),
   uf,
   city,
-  value
+  value,
+  job
 })
 
 class App extends Component {

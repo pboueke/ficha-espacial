@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Table } from 'semantic-ui-react'
-import { sortWith, ascend, descend, filter, pipe, min, max } from "ramda";
+import { reduce, sortWith, ascend, descend, filter, pipe, min, max } from "ramda";
 import Pagination from "./Pagination";
 
 
@@ -9,7 +9,6 @@ let pipeline = sortFn => pipe(
   removeWithoutValue,
   sortWith([sortFn])
 )
-
 
 class Ranking extends Component {
   state = {
@@ -24,14 +23,17 @@ class Ranking extends Component {
 
   sortFn = () => {
     let {sortCol, sortOrder} = this.state
+
+    let ascending = sortOrder == "ascending"
+
     // Get first or last year depending on direction
-    let getYear = sortOrder == "ascending" ? min : max
+    let getYear = reduce(
+      ascending ? min : max,
+      ascending ? Infinity : -Infinity,
+    )
     let g = sortCol == "years" ? (x) => getYear(x.years) : (x) => x[sortCol]
 
-    if (sortOrder == "ascending") {
-      return ascend(g)
-    }
-    return descend(g)
+    return ascending ? ascend(g) : descend(g)
   }
 
   handleChangePage = (page) => this.setState({page})
@@ -58,25 +60,26 @@ class Ranking extends Component {
     let candidates = this.candidates()
     let {rowsPerPage, page, sortCol, sortOrder} = this.state
 
-    let rows = candidates
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-        .map((c) => (
-      <Table.Row>
-        <Table.Cell> {c.name} </Table.Cell>
-        <Table.Cell> {c.value} </Table.Cell>
-        <Table.Cell> {c.uf} </Table.Cell>
-        <Table.Cell> {c.city} </Table.Cell>
-        <Table.Cell> {c.years.join(", ")} </Table.Cell>
-      </Table.Row>
-    ))
-
     let cols = [
       { id: "name", title: "Nome" },
       { id: "value", title: "Score" },
       { id: "uf", title: "UF" },
       { id: "city", title: "Cidade" },
+      { id: "job", title: "Cargo"},
       { id: "years", title: "Anos" },
     ]
+
+    let rows = candidates
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+        .map((c) => (
+      <Table.Row>
+        {
+          cols.map(({id}) => (
+            <Table.Cell key={id}> { id == "years" ? c[id].join(", ") : c[id] } </Table.Cell>
+          ))
+        }
+      </Table.Row>
+    ))
 
     return (
       <Table celled sortable>
