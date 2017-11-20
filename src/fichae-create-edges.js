@@ -10,8 +10,9 @@ var lineByLine = require('n-readlines');
 program
     .usage('[options]')
     .option("-t, --type <tp>", "the type of edge to be created")
-    .option("-s, --source <src>", "the source/collection, if needed")
+    .option("-s, --source <src>", "the source/collection")
     .option("-y, --year <yr>", "the year to start the relations", parseInt)
+    .option("-d, --destiny <src>", "the destiny source/collection, if needed")
     .parse(process.argv);
 
 process.on('unhandledRejection', (err, p) => { 
@@ -33,12 +34,14 @@ const db = new arangojs.Database({
 var debug = {
     type: "years",
     source: "firjan-geral",
-    year: "2006"
+    year: "2006",
+    destiny: "firjan-geral"
 }
 
 var yr = program.year || debug.year;
 var tp = program.type || debug.type;
 var src = program.src || debug.source;
+var dst = program.destiny || debug.destiny;
 
 // adds relationships between yearly the objects from the same city 
 if (tp === "years")  { 
@@ -59,7 +62,7 @@ if (tp === "years")  {
             processItem(await val);
         });
 
-        processItem(cur.next());
+        //processItem(cur.next());
 
         async function addYearEdge (city) {
             let sq = arangojs.aql`
@@ -109,6 +112,91 @@ if (tp === "years")  {
                 process.exit();
             }
             await addYearEdge(await item);
+            counter += 1;
+
+            //Promise.resolve().then(() => processItem( cur.next()));
+        }
+    })();
+} else if (tp === "elections")  { 
+    console.log(`[${tp}] Starting from ${yr} for source ${src}`);
+    (async () => {
+        let counter = 0;
+        let edge_counter = 0;
+        var col = db.collection(src);
+        const q = arangojs.aql`
+            FOR cand IN ${col}
+            FILTER cand.year == ${yr.toString()}
+            RETURN cand
+            `;
+        console.log(q);
+        const cur = await db.query(q);
+
+        cur.each(async function (val) {
+            processItem(await val);
+        });
+
+        processItem(cur.next());
+
+        async function processItem(item) {
+            if (await item === null || !item) {
+                console.log("All Done, total inserted: " + counter); 
+                process.exit();
+            }
+
+            let edge1 = {
+                _key: item.canidate_name + "_" + (parseInt(item.year)+0).toString(),
+                _from: item._id,
+                _to: dst + "/" + item.location + "_" + (parseInt(item.year)+0).toString(),
+            }
+            try {
+                await db.collection(src+"-edges").save(edge1);
+                edge_counter += 1;
+                console.log(`[${counter} / ${edge_counter}] Saved new edge: ${edge1._key}`)
+            } catch (err) {
+                console.log(err.message)
+                console.log(`[${counter} / ${edge_counter}] Candidate and city already connected: ${edge1._key}`)
+            }
+            let edge2 = {
+                _key: item.canidate_name + "_" + (parseInt(item.year)+1).toString(),
+                _from: item._id,
+                _to: dst + "/" + item.location + "_" + (parseInt(item.year)+1).toString(),
+            }
+            try {
+                await db.collection(src+"-edges").save(edge2);
+                edge_counter += 1;
+                console.log(`[${counter} / ${edge_counter}] Saved new edge: ${edge2._key}`)
+            } catch (err) {
+                console.log(err.message)
+                console.log(`[${counter} / ${edge_counter}] Candidate and city already connected: ${edge2._key}`)
+            }
+            let edge3 = {
+                _key: item.canidate_name + "_" + (parseInt(item.year)+2).toString(),
+                _from: item._id,
+                _to: dst + "/" + item.location + "_" + (parseInt(item.year)+2).toString(),
+            }
+            try {
+                await db.collection(src+"-edges").save(edge3);
+                edge_counter += 1;
+                console.log(`[${counter} / ${edge_counter}] Saved new edge: ${edge3._key}`)
+            } catch (err) {
+                console.log(err.message)
+                console.log(`[${counter} / ${edge_counter}] Candidate and city already connected: ${edge3._key}`)
+            }
+            let edge4 = {
+                _key: item.canidate_name + "_" + (parseInt(item.year)+3).toString(),
+                _from: item._id,
+                _to:  dst + "/" + item.location + "_" + (parseInt(item.year)+3).toString(),
+            }
+            try {
+                await db.collection(src+"-edges").save(edge4);
+                edge_counter += 1;
+                console.log(`[${counter} / ${edge_counter}] Saved new edge: ${edge4._key}`)
+            } catch (err) {
+                console.log(err.message)
+                console.log(`[${counter} / ${edge_counter}] Candidate and city already connected: ${edge4._key}`)
+            }
+            
+
             counter += 1;
 
             //Promise.resolve().then(() => processItem( cur.next()));
