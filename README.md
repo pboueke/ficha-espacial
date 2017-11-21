@@ -2,7 +2,8 @@
 
 Project that aims at cross-referencing Brazilian electoral data with social indicators from open and geolocalized data.
 
-[PT-BR] Pitch: https://pboueke.github.io/ficha-espacial/presentation/#/Title
+[PT-BR] Pitch: https://pboueke.github.io/ficha-espacial/presentation/
+
 Elected candidates ranking: http://ficha-espacial.surge.sh
 
 ## Modelling
