@@ -1,13 +1,40 @@
 import React, { Component } from "react";
-import { Table } from 'semantic-ui-react'
-import { reduce, sortWith, ascend, descend, filter, pipe, min, max } from "ramda";
-import Pagination from "./Pagination";
+import { Dropdown, Form } from "semantic-ui-react";
+import {
+  allPass,
+  any,
+  map,
+  uniq,
+  ascend,
+  descend,
+  filter,
+  max,
+  min,
+  pipe,
+  prop,
+  range,
+  reduce,
+  sortWith,
+} from "ramda";
+import RankingTable from "./RankingTable"
 
+let yearFilter = start => end => pipe(
+  prop("years"),
+  any((y) => y >= start && y <= end)
+)
+
+// This is not working properly
+let fuzzyCityFilter = text => ({city}) => (
+  city.toLowerCase().indexOf(text.toLowerCase()) >= 0
+)
+
+let ufFilter = (ufs) => ({uf}) => ufs.length == 0 || ufs.indexOf(uf) >= 0
 
 let removeWithoutValue = filter(({value}) => value)
-let pipeline = sortFn => pipe(
+let pipeline = (sortFn, filters) => pipe(
   removeWithoutValue,
-  sortWith([sortFn])
+  sortWith([sortFn]),
+  filter(allPass(filters))
 )
 
 class Ranking extends Component {
@@ -16,10 +43,16 @@ class Ranking extends Component {
     page: 1,
     sortCol: "value",
     sortOrder: "descending",
+    filters: {
+      startYear: 2000,
+      endYear: 2020,
+      fuzzyCity: "",
+      uf: []
+    },
     candidates: []
   }
 
-  candidates = () => pipeline(this.sortFn())(this.props.candidates)
+  candidates = () => pipeline(this.sortFn(), this.filters())(this.props.candidates)
 
   sortFn = () => {
     let {sortCol, sortOrder} = this.state
@@ -35,6 +68,12 @@ class Ranking extends Component {
 
     return ascending ? ascend(g) : descend(g)
   }
+
+  filters = () => [
+    yearFilter(this.state.filters.startYear)(this.state.filters.endYear),
+    fuzzyCityFilter(this.state.filters.fuzzyCity),
+    ufFilter(this.state.filters.uf),
+  ]
 
   handleChangePage = (page) => this.setState({page})
   handleChangeRowsPerPage = (rowsPerPage) => this.setState({rowsPerPage})
@@ -56,58 +95,58 @@ class Ranking extends Component {
     })
   }
 
+  handleChangeFilter = (filter) => (_, {value}) => this.changeFilter(filter)(value)
+
+  changeFilter = (filter) => (value) => {
+    console.log(filter, value)
+    this.setState({filters: {
+      ...this.state.filters,
+      [filter]: value
+    }})
+  }
+
   render() {
     let candidates = this.candidates()
     let {rowsPerPage, page, sortCol, sortOrder} = this.state
+    let {handleChangePage, handleSort} = this
+    let tableProps = {rowsPerPage, page, sortCol, sortOrder, candidates, handleChangePage, handleSort}
 
-    let cols = [
-      { id: "name", title: "Nome" },
-      { id: "value", title: "Score" },
-      { id: "uf", title: "UF" },
-      { id: "city", title: "Cidade" },
-      { id: "job", title: "Cargo"},
-      { id: "years", title: "Anos" },
+    let years = range(2000, 2021)
+    let valToOption = (y) => ({ key: y, value: y, text: y })
+    let yearOptions = years.map(valToOption)
+    let ufs = [
+      'AC', 'AL', 'AM', 'AP', 'BA',
+      'CE', 'DF', 'ES', 'GO', 'MA',
+      'MG', 'MS', 'MT', 'PA', 'PB',
+      'PE', 'PI', 'PR', 'RJ', 'RN',
+      'RO', 'RR', 'RS', 'SC', 'SE',
+      'SP', 'TO'
     ]
+    let ufOptions = ufs.map(valToOption)
 
-    let rows = candidates
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-        .map((c) => (
-      <Table.Row>
-        {
-          cols.map(({id}) => (
-            <Table.Cell key={id}> { id == "years" ? c[id].join(", ") : c[id] } </Table.Cell>
-          ))
-        }
-      </Table.Row>
-    ))
+    let yearFilter = (
+      <Form>
+        <Form.Dropdown inline selection
+                       label="Ano Inicio"
+                       onChange={this.handleChangeFilter("startYear")}
+                       options={yearOptions}/>
+        <Form.Dropdown inline selection
+                       label="Ano Fim"
+                       onChange={this.handleChangeFilter("endYear")}
+                       options={yearOptions}/>
+        <Form.Dropdown inline selection multiple
+                       label="UF"
+                       onChange={this.handleChangeFilter("uf")}
+                       options={ufOptions}/>
+        <Form.Input inline label="Cidade" onChange={this.handleChangeFilter("fuzzyCity")}/>
+      </Form>
+    )
 
     return (
-      <Table celled sortable>
-        <Table.Header>
-          <Table.Row>
-            {cols.map(({id, title}) => (
-              <Table.HeaderCell sorted={sortCol == id && sortOrder} onClick={this.handleSort(id)}>
-                { title }
-              </Table.HeaderCell>
-            ))}
-          </Table.Row>
-        </Table.Header>
-
-        <Table.Body>
-          { rows }
-        </Table.Body>
-
-        <Table.Footer>
-          <Table.HeaderCell colSpan='5'>
-            <Pagination
-              page={page}
-              rowsPerPage={25}
-              total={candidates.length}
-              onPageChange={this.handleChangePage}
-              />
-          </Table.HeaderCell>
-        </Table.Footer>
-      </Table>
+      <div>
+        { yearFilter }
+        <RankingTable {...tableProps}/>
+      </div>
     )
   }
 }
