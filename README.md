@@ -1,6 +1,9 @@
 # ficha-espacial
 
-Projeto que visa realizar o cruzamento de dados eleitorais brasileiros com indicadores sociais a partir de dados abertos e geolocalizados
+Project that aims at cross-referencing Brazilian electoral data with social indicators from open and geolocalized data.
+
+[PT-BR] Pitch: https://pboueke.github.io/ficha-espacial/presentation/#/Title
+Elected candidates ranking: http://ficha-espacial.surge.sh
 
 ## Modelling
 
