@@ -6,6 +6,8 @@ Project that aims at cross-referencing Brazilian electoral data with social indi
 
 Elected candidates ranking: http://ficha-espacial.surge.sh
 
+[PT-BR] Results: https://speakerdeck.com/pboueke/ficha-espacial
+
 ## Modelling
 
 Simply put, the idea is to use a social indicator variation to infer a relative effectiveness rate for the elected political entities over the years for the many cities of Brazil. 
